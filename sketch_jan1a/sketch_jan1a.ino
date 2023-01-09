@@ -103,10 +103,13 @@ void loop()
 
     // TH1: Xử lý theo message control
     if (inputString != ""){
-      // Example: '101 - 3h20m'
+      // Example: '101-30'
       // Task 1: Thiết lập thời gian hết hạn - m_c
       // m_c = cur_t + thời gian
-
+      // 1->on
+      // 0->off
+      // a->auto
+      //
       // Task 2: Điều khiển device theo message này
       if (inputString[0] == '1') digitalWrite(redLedPin, HIGH);
       else if (inputString[0] == '0') digitalWrite(redLedPin, LOW);
