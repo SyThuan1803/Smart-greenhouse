@@ -56,11 +56,15 @@ def controlThread(ser):
 
 def update_data(dat):
     # Update data function, parse raw serial data and then update.
-    cur_time_form = r"At: ([\w+ :]*)\\n>>"                    # Example: At: Sat Jan  7 12:16:38 2023 -
+    cur_time_form = r"At: ([\w+ :]*)\\n>>"                  # Example: At: Sat Jan  7 12:16:38 2023 -
     humidity_form = r"Humidity \(\%\): ([0-9.]*)"           # Example: Humidity (%): 53.00
     temperature_form = r"Temperature \(C\): ([0-9.]*)"      # Example: Temperature (C): 30.00
     photoresistor_form = r"Photoresistor: ([0-9.]*)"        # Example: Photoresistor: 780
     soil_moisture_form = r"Soil moisture: ([0-9.]*)"        # Example: Soil moisture: 1223
+    fan_form = r"Fan \(red led\): ([OFN]*)"               # Example: Fan (red led): OFF
+    bulb_form = r"Bulb \(yellow led\): ([OFN]*)"          # Example: Bulb (yellow led): ON
+    waterp_form = r"Water pump \(green led\): ([OFN]*)"   # Example: Water pump (green led): ON
+    auto_mode_form = r"Auto mode: ([OFN]*)"
 
     #global data
     #data = [None for i in range (5)]
@@ -71,6 +75,11 @@ def update_data(dat):
     temp_data = get_data_from_format(temperature_form, dat)
     phot_data = get_data_from_format(photoresistor_form, dat)
     soil_data = get_data_from_format(soil_moisture_form, dat)
+    fan_status = get_data_from_format(fan_form, dat)
+    bulb_status = get_data_from_format(bulb_form, dat)
+    waterp_status = get_data_from_format(waterp_form, dat)
+    auto_mode = get_data_from_format(auto_mode_form, dat)
+
     # except:
     #     raise("Serial data was wrong format or something went ")
 
@@ -88,12 +97,16 @@ def update_data(dat):
 
     data[0] = humi_data
     data[1] = temp_data
-    if int(phot_data)<3000:
+    if int(phot_data) < 3000:
         data[2]="day"
     else:
         data[2]="night"
     data[3] = soil_data
     data[4] = cur_time_dict
+    data[5] = fan_status
+    data[6] = bulb_status
+    data[7] = waterp_status
+    data[8] = auto_mode
     
 
     # # The below code block just for debug, after done please do comment it
@@ -117,9 +130,10 @@ if __name__ == "__main__":
     is_stopping = False
     
     global data 
-    data = [None for i in range (5)]
+    data = [None for i in range (9)]
     # Nam
-    # update_data("At: Thu Jan  1 00:00:09 1970\\n>>Humidity (%): 0.00	Temperature (C): 0.00	Photoresistor: 4095	Soil moisture: 1086")
+    # # update_data("At: Thu Jan  1 00:00:09 1970\\n>>Humidity (%): 0.00	Temperature (C): 0.00	Photoresistor: 4095	Soil moisture: 1086")
+    # update_data("At: Thu Jan  1 00:00:44 1970\\n>> Humidity (%): 82.00	Temperature (C): 26.00	Photoresistor: 4028	Soil moisture: 1005\\nFan (red led): OFF	Bulb (yellow led): ON	Water pump (green led): ON\\nAuto mode: ON\\n---")
     # [print(a) for a in data]
 
     #Dat

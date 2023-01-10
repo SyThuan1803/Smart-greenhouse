@@ -12,18 +12,18 @@
 #define greenLedPin 15  // Representing for the activate of water pump (provide water for tree)
 
 dht11 DHT11;  // sensor init
-bool auto_mode = true;  // change led state (represent for state of some hardwares like fan, bulb, water pump) automatically
+//bool auto_mode = true;  // change led state (represent for state of some hardwares like fan, bulb, water pump) automatically
 
 // Define some threshold
-int temperatureThreshold = 35;      // if the temperatureValue is greater than the threshold, the fan should be turned on
+int temperatureThreshold = 30;      // if the temperatureValue is greater than the threshold, the fan should be turned on
 int photoresistorThreshold = 3000;  // if the photoresistorValue is greater than the threshold, the bulb should be turned on
 int soilMoistureThreshold = 1000;   // if the soilMoisutreValue is less than the threshold, the water bump should be turned on
 
 // Global variable
-std::string inputString = "";    // string read from Serial
+std::string inputString = "";       // string read from Serial
 bool stringComplete;
-std::time_t t_c = NULL;     // time control
-std::string m_c = "";       // message control
+std::time_t t_c = 0;                // time control, t_c = 0 nghĩa là thiết bị đang trong mode auto, ngược lại nghĩa là đang trong mode manual
+//std::string m_c = "";             // message control
 
 
 void setup()
@@ -79,6 +79,10 @@ void loop()
   int photoresistorValue = analogRead(cdsLSPin);
   int soilMoistureValue = analogRead(sMSPin);
 
+  bool redLedStatus = digitalRead(redLedPin);
+  bool yellowLedStatus = digitalRead(yellowLedPin);
+  bool greenLedStatus = digitalRead(greenLedPin);
+
   // Xuất thông tin ra Serial
   Serial.print("At: ");
   Serial.print(std::ctime(&cur_t));
@@ -94,7 +98,23 @@ void loop()
   Serial.print(photoresistorValue);
 
   Serial.print("\tSoil moisture: ");  
-  Serial.println(soilMoistureValue);
+  Serial.println(soilMoistureValue);    // println(soilMoistureValue);
+
+  Serial.print("Fan (red led): ");
+  if (redLedStatus) Serial.print("ON\t");
+  else Serial.print("OFF\t");
+
+  Serial.print("Bulb (yellow led): ");
+  if (yellowLedStatus) Serial.print("ON\t");
+  else Serial.print("OFF\t");
+
+  Serial.print("Water pump (green led): ");
+  if (greenLedStatus) Serial.println("ON\t");
+  else Serial.println("OFF\t");
+
+  Serial.print("Auto mode: ");
+  if (t_c != 0) Serial.println("OFF");
+  else Serial.println("ON");
 
   Serial.println("---");
   
@@ -103,13 +123,21 @@ void loop()
 
     // TH1: Xử lý theo message control
     if (inputString != ""){
-      // Example: '101-30'
-      // Task 1: Thiết lập thời gian hết hạn - m_c
-      // m_c = cur_t + thời gian
+      // Example: '101-120' - nghĩa là bật đèn đỏ, tắt đèn vàng, bật đèn xanh, trạng thái này duy trì trong vòng 120 phút.
+      // Task 1: Thiết lập thời gian hết hạn - t_c
+      // t_c = cur_t + activate_time
       // 1->on
       // 0->off
       // a->auto
-      //
+      
+      // Get '120' from inputString
+      int active_time = stoi(inputString.substr(4, inputString.length()-4));
+      t_c = cur_t;
+      struct tm* tm = localtime(&t_c);
+      tm->tm_min += active_time;
+      t_c = mktime(tm);
+
+
       // Task 2: Điều khiển device theo message này
       if (inputString[0] == '1') digitalWrite(redLedPin, HIGH);
       else if (inputString[0] == '0') digitalWrite(redLedPin, LOW);
@@ -125,11 +153,11 @@ void loop()
         else digitalWrite(yellowLedPin, LOW);
       }
 
-      if (inputString[2] == '1') digitalWrite(redLedPin, HIGH);
-      else if (inputString[2] == '0') digitalWrite(redLedPin, LOW);
+      if (inputString[2] == '1') digitalWrite(greenLedPin, HIGH);
+      else if (inputString[2] == '0') digitalWrite(greenLedPin, LOW);
       else if (inputString[2] == 'a'){
-        if (soilMoistureValue < soilMoistureThreshold) digitalWrite(redLedPin, HIGH);
-        else digitalWrite(redLedPin, LOW);
+        if (soilMoistureValue < soilMoistureThreshold) digitalWrite(greenLedPin, HIGH);
+        else digitalWrite(greenLedPin, LOW);
       }
 
       // clear the string
@@ -139,39 +167,29 @@ void loop()
       delay(1000);
       return;
     }
+  }
 
-    // TH2: Nếu không có message nào được đọc từ serial,
-    // điều khiển device theo thiết đặt từ lệnh trước (lệnh control trước)
-    // hoặc chế độ auto.
-    else if (t_c != NULL){
-      double diff;
-      diff = std::difftime(t_c, cur_t);
 
-      // Nếu t_c đã hết hạn
-      if (diff <= 0){
-        t_c = NULL;
-      }
+  // TH2: Nếu không có message nào được đọc từ serial,
+  // điều khiển device theo thiết đặt từ lệnh trước (lệnh control trước)
+  // hoặc chế độ auto.
+  if (t_c != 0){
+    double diff;
+    diff = std::difftime(t_c, cur_t);
 
-      // Nếu không có gì thay đổi, giữ nguyên điều khiển như cũ
-      else {
-        delay(1000);
-        return;
-      }      
+    // Nếu t_c đã hết hạn
+    if (diff <= 0){
+      t_c = 0;
     }
 
-    // // TH3: Không có message control, chạy device ở chế độ auto    
-    // if (temperatureValue > temperatureThreshold) digitalWrite(redLedPin, HIGH);
-    // else digitalWrite(redLedPin, LOW);
-
-    // if (photoresistorValue > photoresistorThreshold) digitalWrite(yellowLedPin, HIGH);
-    // else digitalWrite(yellowLedPin, LOW);
-
-    // if (soilMoistureValue < soilMoistureThreshold) digitalWrite(greenLedPin, HIGH);
-    // else digitalWrite(greenLedPin, LOW);
-
-    // delay(1000);
+    // Nếu không có gì thay đổi, giữ nguyên điều khiển như cũ
+    else {
+      delay(1000);
+      return;
+    }      
   }
   
+
   // TH3: Không có message control, chạy device ở chế độ auto    
   if (temperatureValue > temperatureThreshold) digitalWrite(redLedPin, HIGH);
   else digitalWrite(redLedPin, LOW);
