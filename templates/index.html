@@ -11,62 +11,77 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--<script>
+        $(document).ready(function() {
+            setInterval(function() {
+                $("#autodiv").load('auto')
+            }, 1000);
+        });
+    </script>-->
+    <script>
+        window.setTimeout(function() {
+            window.location.reload();
+        }, 1000);
+    </script>
 </head>
 
 <body>
-    <div class="title"><img src="../../templates/assets/logo.png" alt="logo">
-        <span>SMART GREENHOUSE</span>
-    </div>
-    <div class="container1">
-        <div class="title2">
-            <span>My data</span>
+    <div id=autodiv>
+        <div class="title"><img src="static/assets/logo.png" alt="logo">
+            <span>SMART GREENHOUSE</span>
         </div>
-        <div class="card-container">
-            <div class="card-row">
-                <div class="card">
-                    <div class="card-image"><img src="../../templates/assets/tomato.png" alt=""></div>
-                    <div class="card-crop">Temperature</div>
-                    <div class="card-time">{{dat0}}</div>
-                </div>
-                <div class="card">
-                    <div class="card-image"><img src="../../templates/assets/methi.jpg" alt=""></div>
-                    <div class="card-crop">Humidity</div>
-                    <div class="card-time">{{ dat1 }}</div>
-                </div>
+        <div class="container1">
+            <div class="title2">
+                <span>My data</span>
             </div>
-            <div class="card-row">
-                <div class="card">
-                    <div class="card-image"><img src="../../templates/assets/lettuce.png" alt=""></div>
-                    <div class="card-crop">Day</div>
-                    <div class="card-time">{{ dat2 }}</div>
+            <div class="card-container">
+                <div class="card-row">
+                    <div class="card">
+                        <div class="card-image"><img src="static/assets/tomato.png" alt=""></div>
+                        <div class="card-crop">Temperature</div>
+                        <div class="card-time">{{dat0}}</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-image"><img src="static/assets/methi.jpg" alt=""></div>
+                        <div class="card-crop">Humidity</div>
+                        <div class="card-time">{{ dat1 }}</div>
+                    </div>
+                </div>
+                <div class="card-row">
+                    <div class="card">
+                        <div class="card-image"><img src="static/assets/lettuce.png" alt=""></div>
+                        <div class="card-crop">Day</div>
+                        <div class="card-time">{{ dat2 }}</div>
 
-                </div>
-                <div class="card">
-                    <div class="card-image"><img src="../../templates/assets/spinach.png" alt=""></div>
-                    <div class="card-crop">Soil Moisture</div>
-                    <div class="card-time">{{ dat3 }}</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-image"><img src="static/assets/spinach.png" alt=""></div>
+                        <div class="card-crop">Soil Moisture</div>
+                        <div class="card-time">{{ dat3 }}</div>
 
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="title2">
-            <span>Devices</span>
-        </div>
-        <div class="card-container2">
-            <div class="card-row">
-                <div class="nav2">
-                    <label for="fan" class="check card-image-new"><img src="../../templates/assets/fan.png" alt=""><a href="/control.html/FAN" type="button" class="btn btn-primary btn-lg">FAN</button></a></label>
-                </div>
-                <div class="nav2">
-                    <label for="light" class="check card-image-new"><img src="../../templates/assets/sun.png" alt=""><a href="/control.html/LIGHT" type="button" class="btn btn-primary btn-lg">LIGHT</button></a></label>
-                </div>
+            <div class="title2">
+                <span>Devices</span>
             </div>
-            <div class="card-row">
-                <div class="nav2">
-                    <label for="water" class="check card-image-new"><img src="../../templates/assets/drop.png" alt=""><a href="./control.html/WATER" type="button" class="btn btn-primary btn-lg">WATER</button></a></label>
+            <div class="card-container2">
+                <div class="card-row">
+                    <div class="nav2">
+                        <label for="fan" class="check card-image-new"><img src="static/assets/fan.png" alt=""><a href="/control.html/FAN" type="button" class="btn btn-primary btn-lg">FAN</button></a></label>
+                    </div>
+                    <div class="nav2">
+                        <label for="light" class="check card-image-new"><img src="static/assets/sun.png" alt=""><a href="/control.html/LIGHT" type="button" class="btn btn-primary btn-lg">LIGHT</button></a></label>
+                    </div>
                 </div>
-                <div class="nav2">
-                    <label for="uv" class="check card-image-new"><img src="../../templates/assets/uv-protection.png" alt=""><a href="./control.html/BACK" type="button" class="btn btn-primary btn-lg">BACK</button></a></label>
+                <div class="card-row">
+                    <div class="nav2">
+                        <label for="water" class="check card-image-new"><img src="static/assets/drop.png" alt=""><a href="./control.html/WATER" type="button" class="btn btn-primary btn-lg">WATER</button></a></label>
+                    </div>
+                    <div class="nav2">
+                        <label for="uv" class="check card-image-new"><img src="static/assets/uv-protection.png" alt=""><a href="./control.html/BACK" type="button" class="btn btn-primary btn-lg">BACK</button></a></label>
+                    </div>
                 </div>
             </div>
         </div>

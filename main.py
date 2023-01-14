@@ -9,19 +9,20 @@ import queue
 app = Flask(__name__)
 
 cmd_queue = queue.Queue()
-@app.route('/')
-def hello_world():
+# @app.route('/')
+# def hello_world():
 
-    return render_template('index.html',dat0=data[0],dat1=data[1],dat2=data[2],dat3=data[3])#, dat1=data[0], dat2=data[1])
-    # return render_template('view2.html')#, dat1=data[0], dat2=data[1])
+#     return render_template('index.html',dat0=data[0],dat1=data[1],dat2=data[2],dat3=data[3])#, dat1=data[0], dat2=data[1])
+#     #return render_template('view2.html')#, dat1=data[0], dat2=data[1])
 
 
-@app.route('/control.html/FAN')
+@app.route('/')#control.html/FAN')
 def auto():
-    if request.method== 'POST':
-        return render_template('/control.html',status_manual='ON')#, dat1=data[0], dat2=data[1])
-    else:
-        return render_template('/control.html/FAN',Device="FAN",status_manual='ON')
+    return render_template('index.html',dat0=data[1],dat1=data[0],dat2=data[2],dat3=data[3])
+    # if request.method== 'POST':
+    #     return render_template('/control.html',status_manual='ON')#, dat1=data[0], dat2=data[1])
+    # else:
+    #     return render_template('/control.html/FAN',Device="FAN",status_manual='ON')
 
 # Should del
 @app.route('/turn_on')  
@@ -142,20 +143,20 @@ if __name__ == "__main__":
     # [print(a) for a in data]
 
     #Dat
-    # h_serial = serial.Serial('COM8', 115200, timeout=1)
+    h_serial = serial.Serial('COM8', 115200, timeout=1)
 
-    # h_reading_thread = threading.Thread(target=readingThread, args=(h_serial,))
-    # h_reading_thread.start()
+    h_reading_thread = threading.Thread(target=readingThread, args=(h_serial,))
+    h_reading_thread.start()
 
-    # h_control_thread = threading.Thread(target=controlThread, args=(h_serial,))
-    # h_control_thread.start()
+    h_control_thread = threading.Thread(target=controlThread, args=(h_serial,))
+    h_control_thread.start()
 
     app.run()
 
 
-    # is_stopping = True
-    # h_reading_thread.join()
-    # h_control_thread.join()
+    is_stopping = True
+    h_reading_thread.join()
+    h_control_thread.join()
 
-    # h_serial.close()
-    # print("OK\n")
+    h_serial.close()
+    print("OK\n")
