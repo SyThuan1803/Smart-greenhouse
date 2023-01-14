@@ -3,7 +3,7 @@ import serial
 import time
 import regex as re
 import threading 
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for, request, redirect
 import queue
 
 app = Flask(__name__)
@@ -16,9 +16,12 @@ def hello_world():
     # return render_template('view2.html')#, dat1=data[0], dat2=data[1])
 
 
-@app.route('/auto')
+@app.route('/control.html/FAN')
 def auto():
-    return 'Current data:<br>Humidity: ' + str(data[0]) + '<br>Temperature: ' + str(data[1])
+    if request.method== 'POST':
+        return render_template('/control.html',status_manual='ON')#, dat1=data[0], dat2=data[1])
+    else:
+        return render_template('/control.html/FAN',Device="FAN",status_manual='ON')
 
 # Should del
 @app.route('/turn_on')  
@@ -79,7 +82,9 @@ def update_data(dat):
     bulb_status = get_data_from_format(bulb_form, dat)
     waterp_status = get_data_from_format(waterp_form, dat)
     auto_mode = get_data_from_format(auto_mode_form, dat)
-
+    # nếu chọn fan -> cần phải có được bulb và water
+    # check auto_mode, đọc được 3 trạng thái auto or not của 3 thiết bị
+    # 1a
     # except:
     #     raise("Serial data was wrong format or something went ")
 
