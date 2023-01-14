@@ -9,21 +9,32 @@ import queue
 app = Flask(__name__)
 
 cmd_queue = queue.Queue()
-# @app.route('/')
-# def hello_world():
+@app.route('/')
+def hello_world():
+    return render_template('index.html',dat0=data[0],dat1=data[1],dat2=data[2],dat3=data[3])#, dat1=data[0], dat2=data[1])
 
-#     return render_template('index.html',dat0=data[0],dat1=data[1],dat2=data[2],dat3=data[3])#, dat1=data[0], dat2=data[1])
-#     #return render_template('view2.html')#, dat1=data[0], dat2=data[1])
+@app.route('/control.html/FAN')
+def auto1():
+    if request.method== 'POST':
+        return render_template('/control.html',Device="FAN",status_manual='ON')
+    else:
+        return render_template('/control.html',Device="FAN",status_manual='ON')
 
 
-@app.route('/')#control.html/FAN')
-def auto():
-    return render_template('index.html',dat0=data[1],dat1=data[0],dat2=data[2],dat3=data[3])
-    # if request.method== 'POST':
-    #     return render_template('/control.html',status_manual='ON')#, dat1=data[0], dat2=data[1])
-    # else:
-    #     return render_template('/control.html/FAN',Device="FAN",status_manual='ON')
+@app.route('/control.html/WATER')
+def auto2():
+    if request.method== 'POST':
+        return render_template('/control.html',Device="WATER",status_manual='ON')
+    else:
+        return render_template('/control.html',Device="WATER",status_manual='ON')
 
+
+@app.route('/control.html/LIGHT')
+def auto3():
+    if request.method== 'POST':
+        return render_template('/control.html',Device="LIGHT",status_manual='ON')
+    else:
+        return render_template('/control.html',Device="LIGHT",status_manual='ON')
 # Should del
 @app.route('/turn_on')  
 def turn_on():
